@@ -1,8 +1,20 @@
 # Profile
 
-Uses the node.js integrated [inspector](https://nodejs.org/api/inspector.html) API.
+Profile via a curl or wget command which downloads the results to the local filesystem.
+Configurable sampling and profile duration.
 
-Shell commands to profile, download, and save to local filesystem.
+For compatibility, utilizes the node.js integrated [inspector](https://nodejs.org/api/inspector.html) API.
+
+Use when a profile is needed in a remote environment and the server is accessible, 
+but not the filesystem. In kubernetes, if profiling writes to the local filesystem
+and the server crashes, the file is lost.
+
+This library efficiently streams the results back so it doesn't dominate the
+event thread.
+
+Uses either a provided express app or creates a new express app.
+The new express app provides auth and exponential rate limiting on auth failures.
+If using a provided express app, BYO auth and rate limiting.
 
 Parameters:
 
