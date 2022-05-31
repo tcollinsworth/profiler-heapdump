@@ -1,0 +1,46 @@
+{
+  "name": "diagnostic-tools",
+  "version": "0.1.0",
+  "description": "",
+  "main": "api.js",
+  "scripts": {
+    "startNewExpress": "node manual/test-server-new-express-index.js",
+    "startProvidedExpress": "node manual/test-server-provided-express-index.js",
+    "watchUnit": "NODE_ENV=DEBUG ava --fail-fast -v **/__tests__/**/*test*.js --watch",
+    "test": "NODE_ENV=DEBUG ava --fail-fast --config ava.config.cjs",
+    "watchLint": "esw . --ext=js --ignore-path .gitignore --fix --watch",
+    "lint": "eslint . --ext=js --ignore-path .gitignore --fix"
+  },
+  "keywords": [
+    "diagnostic",
+    "profile",
+    "heapdump"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "Troy Collinsworth",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tcollinsworth/profiler-heapdump.git"
+  },
+  "dependencies": {
+    "bfj": "^7.0.2",
+    "compression": "^1.7.4",
+    "express": "^4.18.1",
+    "express-async-wrap": "^1.0.0",
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "devDependencies": {
+    "ava": "^3.15.0",
+    "axios": "^0.27.2",
+    "delay": "^5.0.0",
+    "eslint": "^8.16.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-watch": "^8.0.0",
+    "esm-wallaby": "^3.2.26",
+    "ignore-styles": "^5.0.1"
+  }
+}

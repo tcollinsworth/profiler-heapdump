@@ -1,0 +1,10 @@
+x Can mount existing express app to reuse server socket port
+x    alternatively creates new express app to not share server socket port
+x Can take credentials for auth
+x    implements rate limiting on bad auth
+x Can take time limit for profile
+x    has default which can be configured
+
+o Can return heap or profile as stream
+o    alternatively can write to file
+o heap scrub default https://www.npmjs.com/package/heap-snapshot-sanitizer
