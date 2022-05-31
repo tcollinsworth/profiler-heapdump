@@ -1,5 +1,5 @@
 {
-  "name": "diagnostic-tools",
+  "name": "profiler-heapdump",
   "version": "0.1.0",
   "description": "",
   "main": "api.js",
