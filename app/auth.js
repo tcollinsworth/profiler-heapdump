@@ -63,8 +63,7 @@ function authenticate(req, resp, next) {
 
   // no authorization header provided and auth is required, bump rate limiting, return 401
   if (req.headers.authorization == null && state?.authentication?.authorizationToken != null) {
-    bumpRateLimiting()
-    return resp.status(401).send('Unauthorized')
+    return resp.set('WWW-Authenticate', 'Basic').status(401).send('Unauthorized')
   }
 
   let reqAuthToken = null
@@ -77,7 +76,6 @@ function authenticate(req, resp, next) {
   }
 
   if (reqAuthToken == null) {
-    bumpRateLimiting()
     return resp.status(401).send('Unauthorized')
   }
 

@@ -4,6 +4,8 @@ import delay from 'delay'
 
 let session
 let isProfiling = false
+// inspector may have been opened with 'node --inspect' or 'node --inspect-brk', don't close or debugging stops
+let isOpenedInspector = false
 
 export async function getProfile(req, resp) {
   const durationMs = parseInt(req.query.durationSec || 10, 10) * 1000
@@ -24,7 +26,12 @@ export async function getProfile(req, resp) {
 
 export function startInspector(host = '127.0.0.1', port = 9229, wait = false) {
   if (session != null) return
-  inspector.open(port, host, wait)
+  try {
+    inspector.open(port, host, wait)
+    isOpenedInspector = true
+  } catch (e) {
+    if (e.code !== 'ERR_INSPECTOR_ALREADY_ACTIVATED') throw e
+  }
   session = new inspector.Session()
   session.connect()
 }
@@ -33,7 +40,7 @@ export function stopInspector() {
   if (session == null) return
   session.disconnect()
   session = null
-  inspector.close()
+  if (isOpenedInspector)  inspector.close()
 }
 
 export async function startProfiler(sampleRateUs) {

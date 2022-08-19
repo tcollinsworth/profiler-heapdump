@@ -64,8 +64,19 @@ const basicAuth = {
   },
 }
 
+const badBasicAuth = {
+  basic: {
+    username: 'not',
+    password: 'exists',
+  },
+}
+
 const bearerAuth = {
   bearerToken: 'changeme',
+}
+
+const badBearerAuth = {
+  bearerToken: 'notExists',
 }
 
 const basicOptions = {
@@ -105,7 +116,7 @@ test.serial('profile on new express, bearer auth, 429', async (t) => {
   for (;;) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      await profileAndValidate(t)
+      await profileAndValidate(t, badBearerAuth)
       t.fail('expected 401')
     } catch (e) {
       if (e.response.status === 429) break
@@ -151,7 +162,7 @@ test.serial('profile on new express, basic auth, 429', async (t) => {
   for (;;) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      await profileAndValidate(t)
+      await profileAndValidate(t, badBasicAuth)
       t.fail('expected 401')
     } catch (e) {
       if (e.response.status === 429) break

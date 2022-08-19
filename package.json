@@ -1,9 +1,10 @@
 {
   "name": "profiler-heapdump",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "api.js",
   "scripts": {
+    "startNewExpressDebug": "node --inspect-brk manual/test-server-new-express-index.js",
     "startNewExpress": "node manual/test-server-new-express-index.js",
     "startProvidedExpress": "node manual/test-server-provided-express-index.js",
     "watchUnit": "NODE_ENV=DEBUG ava --fail-fast -v **/__tests__/**/*test*.js --watch",
@@ -36,7 +37,7 @@
     "ava": "^3.15.0",
     "axios": "^0.27.2",
     "delay": "^5.0.0",
-    "eslint": "^8.16.0",
+    "eslint": "^8.22.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-watch": "^8.0.0",

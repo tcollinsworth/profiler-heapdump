@@ -40,7 +40,8 @@ curl --compressed \
 ```
 OR
 ```shell
-wget 'http://localhost:6660/profile?durationSec=10&sampleRateUs=1000' \
+wget --http-user=change --http-password=me --auth-no-challenge \
+'http://localhost:6660/profile?durationSec=10&sampleRateUs=1000' \
 -O testProfile1.cpuprofile
 ```
 
@@ -55,8 +56,9 @@ wget 'http://localhost:6660/profile?durationSec=10&sampleRateUs=1000' \
 ```
 
 ## wget basic auth
+Using '--auth-no-challenge' reduces an extra round-trip to challenge wget.
 ```shell
---user <user> --password <pass>
+--user <user> --password <pass> --auth-no-challenge
 ```
 
 ## wget bearer auth
