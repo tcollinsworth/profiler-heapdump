@@ -2,7 +2,7 @@ import cloneDeep from 'lodash.clonedeep'
 import express from 'express'
 import wrap from 'express-async-wrap'
 import { getAuthMiddleware } from './auth'
-import { getProfile } from './inspector-api'
+import { getHeapDump, getProfile } from './inspector-api'
 
 const state = {
   expressServer: undefined,
@@ -50,6 +50,7 @@ export function init(overrideOptions) {
 function initWithExistingExpress() {
   const router = new express.Router()
   router.use('/profile', wrap(getProfile))
+  router.use('/heapdump', wrap(getHeapDump))
   return router
 }
 
@@ -60,6 +61,7 @@ function initWithNewExpress(options) {
   if (authMiddleware != null) app.use(authMiddleware)
 
   app.use('/profile', wrap(getProfile))
+  app.use('/heapdump', wrap(getHeapDump))
 
   state.server = app.listen(options.server.bind.port, options.server.bind.host, () => {
     process.stdout.write(`New Heap/Profiler server listening on ${options.server.bind.host}:${options.server.bind.port}\n`)

@@ -6,15 +6,17 @@ Configurable sampling and profile duration.
 For compatibility, utilizes the node.js integrated [inspector](https://nodejs.org/api/inspector.html) API.
 
 Use when a profile is needed in a remote environment and the server is accessible, 
-but not the filesystem. In kubernetes, if profiling writes to the local filesystem
-and the server crashes, the file is lost.
+but not the filesystem. In kubernetes, if profiling writes to a local ephemeral filesystem
+and the pod or minion crashes, the file is lost.
 
-This library efficiently streams the results back so it doesn't dominate the
-event thread.
+This library efficiently streams the results back to prevent dominating the
+event thread which would unnecessarily increase latency of other requests.
 
 Uses either a provided express app or creates a new express app.
 The new express app provides auth and exponential rate limiting on auth failures.
 If using a provided express app, BYO auth and rate limiting.
+The auth middleware which includes rate limiting is exposed for use
+with provided express apps via the getAuthMiddleware function.
 
 Parameters:
 
@@ -24,6 +26,8 @@ Parameters:
 The longer duration or the higher the sample rate, the more memory required and larger the file.
 
 ```shell
+# default test config is basic auth, this will fail with 401
+
 curl --compressed \
 -G http://localhost:6660/profile \
 -d durationSec=10 \
@@ -143,4 +147,30 @@ const defaultOptions = {
     },
   },
 }
+```
+
+# Heap Dump
+
+Get heap dump via a curl or wget command which downloads the results to the local filesystem.
+
+```shell
+# default test config is basic auth, this will fail with 401
+
+curl --compressed \
+-G http://localhost:6660/heapdump \
+-o testHeap.heapsnapshot \
+-H "Authorization: Bearer changeme"
+```
+OR
+```shell
+curl --compressed \
+'http://localhost:6660/heapdump' \
+-o testHeap.heapsnapshot \
+-u "change:me"
+```
+OR
+```shell
+wget --http-user=change --http-password=me --auth-no-challenge \
+'http://localhost:6660/heapdump' \
+-O testHeap.heapsnapshot
 ```

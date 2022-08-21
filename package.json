@@ -1,10 +1,10 @@
 {
   "name": "profiler-heapdump",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "",
   "main": "api.js",
   "scripts": {
-    "startNewExpressDebug": "node --inspect-brk manual/test-server-new-express-index.js",
+    "startNewExpressDebug": "node --inspect manual/test-server-new-express-index.js",
     "startNewExpress": "node manual/test-server-new-express-index.js",
     "startProvidedExpress": "node manual/test-server-provided-express-index.js",
     "watchUnit": "NODE_ENV=DEBUG ava --fail-fast -v **/__tests__/**/*test*.js --watch",

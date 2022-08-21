@@ -5,6 +5,5 @@ x    implements rate limiting on bad auth
 x Can take time limit for profile
 x    has default which can be configured
 
-o Can return heap or profile as stream
-o    alternatively can write to file
+x Can return heap or profile as stream
 o heap scrub default https://www.npmjs.com/package/heap-snapshot-sanitizer
