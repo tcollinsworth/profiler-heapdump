@@ -23,16 +23,16 @@ test.afterEach(async () => {
   }
 })
 
-test.serial('profile on existing express in options.server.expressApp', async (t) => {
+test.serial('profile on existing express in options.server.isExistingExpressApp=true', async (t) => {
   const app = express()
 
   const router = init({
     server: {
-      expressApp: app,
+      isExistingExpressApp: true,
     },
   })
 
-  app.use(router)
+  app.use('/debug', router)
 
   state.server = app.listen(PORT, HOST, () => {
     process.stdout.write(`Test Heap/Profiler server is listening on ${HOST}:${PORT}\n`)
@@ -46,7 +46,11 @@ test.serial('profile on existing express in options.server.expressApp', async (t
 })
 
 test.serial('profile on new express, no auth options', async (t) => {
-  init()
+  init({
+    server: {
+      newExpresRoutePrefix: '/debug',
+    },
+  })
 
   await profileAndValidate(t, null, '127.0.0.1')
   await shutdown()
@@ -81,6 +85,7 @@ const badBearerAuth = {
 
 const basicOptions = {
   server: {
+    newExpresRoutePrefix: '/debug',
     bind,
     authentication: {
       basic: basicAuth.basic,
@@ -90,6 +95,7 @@ const basicOptions = {
 
 const bearerOptions = {
   server: {
+    newExpresRoutePrefix: '/debug',
     bind,
     authentication: {
       bearerToken: bearerAuth.bearerToken,

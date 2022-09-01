@@ -13,8 +13,8 @@ const state = {
 
 const defaultOptions = {
   server: {
-    expressApp: undefined,
-    routePrefix: '/debug',
+    isExistingExpressApp: false,
+    newExpresRoutePrefix: undefined,
     bind: {
       host: '127.0.0.1',
       port: 6660,
@@ -38,11 +38,8 @@ const defaultOptions = {
 export function init(overrideOptions) {
   const options = cloneDeep(defaultOptions)
   merge(options, overrideOptions)
-  options.server.expressApp = overrideOptions?.server?.expressApp
 
-  if (options.server.bind == null) options.server.bind = defaultOptions.server.bind
-
-  if (options?.server?.expressApp != null) {
+  if (options?.server?.isExistingExpressApp === true) {
     return initWithExistingExpress(options)
   }
   return initWithNewExpress(options)
@@ -52,10 +49,10 @@ function initWithExistingExpress(options) {
   const router = new express.Router()
 
   const authMiddleware = getAuthMiddleware(options?.server?.authentication)
-  if (authMiddleware != null) router.use(options.server.routePrefix, authMiddleware)
+  if (authMiddleware != null) router.use(authMiddleware)
 
-  router.use(`${options.server.routePrefix}/profile`, wrap(getProfile))
-  router.use(`${options.server.routePrefix}/heapdump`, wrap(getHeapDump))
+  router.use('/profile', wrap(getProfile))
+  router.use('/heapdump', wrap(getHeapDump))
   return router
 }
 
@@ -65,8 +62,13 @@ function initWithNewExpress(options) {
   const authMiddleware = getAuthMiddleware(options?.server?.authentication)
   if (authMiddleware != null) app.use(authMiddleware)
 
-  app.use(`${options.server.routePrefix}/profile`, wrap(getProfile))
-  app.use(`${options.server.routePrefix}/heapdump`, wrap(getHeapDump))
+  let routePrefix = ''
+  if (options?.server?.newExpresRoutePrefix != null) {
+    routePrefix = options.server.newExpresRoutePrefix
+  }
+
+  app.use(`${routePrefix}/profile`, wrap(getProfile))
+  app.use(`${routePrefix}/heapdump`, wrap(getHeapDump))
 
   state.server = app.listen(options.server.bind.port, options.server.bind.host, () => {
     process.stdout.write(`New Heap/Profiler server listening on ${options.server.bind.host}:${options.server.bind.port}\n`)

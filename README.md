@@ -97,13 +97,13 @@ Using '--auth-no-challenge' reduces an extra round-trip to challenge wget.
 import { init, shutdown } from 'profiler-heapdump'
 
 const app = express()
-// BYO auth
+// BYO auth or use built-in auth with rate-limiting
 
-const router = init({
+app.use('/debug', init({
   server: {
-    expressApp: app,
+    isExistingExpressApp: true,
   },
-})
+}))
 
 // start the server
 // const server = app.listen ...
@@ -120,7 +120,7 @@ init({
   },
 })
 
-// on sigterm it gracefully shutsdown the server
+// on sigterm gracefully shutsdown the server by calling shutdown
 ```
 
 ### Options
@@ -131,8 +131,8 @@ Be sure to set the authentication.
 ```
 const defaultOptions = {
   server: {
-    expressApp: undefined,
-    routePrefix: '/debug'
+    isExistingExpressApp: false,
+    newExpresRoutePrefix: undefined,
     bind: {
       host: '127.0.0.1',
       port: 6660,
