@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash.clonedeep'
+import merge from 'lodash.merge'
 
 const defaultState = {
   authentication: {
@@ -29,7 +30,7 @@ export function getAuthMiddleware(authOptions) {
   state = cloneDeep(defaultState)
 
   if (authOptions != null) {
-    Object.assign(state.authentication, cloneDeep(authOptions))
+    merge(state.authentication, cloneDeep(authOptions))
   }
 
   if (state?.authentication?.basic?.username != null && state?.authentication?.basic?.password != null) {

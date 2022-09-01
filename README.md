@@ -1,4 +1,8 @@
-# Profile
+# profile-heapdump
+
+Provides ability to capture a profile and heapdump via a curl or wget commands which downloads the results to the local filesystem.
+
+## Profile
 
 Profile via a curl or wget command which downloads the results to the local filesystem.
 Configurable sampling and profile duration.
@@ -29,7 +33,7 @@ The longer duration or the higher the sample rate, the more memory required and 
 # default test config is basic auth, this will fail with 401
 
 curl --compressed \
--G http://localhost:6660/profile \
+-G http://localhost:6660/debug/profile \
 -d durationSec=10 \
 -d sampleRateUs=1000 \
 -o testProfile1.cpuprofile \
@@ -38,39 +42,39 @@ curl --compressed \
 OR
 ```shell
 curl --compressed \
-'http://localhost:6660/profile?durationSec=10&sampleRateUs=1000' \
+'http://localhost:6660/debug/profile?durationSec=10&sampleRateUs=1000' \
 -o testProfile1.cpuprofile \
 -u "change:me"
 ```
 OR
 ```shell
 wget --http-user=change --http-password=me --auth-no-challenge \
-'http://localhost:6660/profile?durationSec=10&sampleRateUs=1000' \
+'http://localhost:6660/debug/profile?durationSec=10&sampleRateUs=1000' \
 -O testProfile1.cpuprofile
 ```
 
-## Curl basic auth
+### Curl basic auth
 ```shell
 -u "username:password"
 ```
 
-## Curl bearer auth
+### Curl bearer auth
 ```shell
 -H "Authorization: Bearer <TOKEN>"
 ```
 
-## wget basic auth
+### wget basic auth
 Using '--auth-no-challenge' reduces an extra round-trip to challenge wget.
 ```shell
 --user <user> --password <pass> --auth-no-challenge
 ```
 
-## wget bearer auth
+### wget bearer auth
 ```shell
 --header="Authorization: Bearer <TOKEN>"
 ```
 
-## Opening Profile
+### Opening Profile
 
 - Open chrome inspector [chrome://inspect/#devices](chrome://inspect/#devices)
 - Click on **_Open dedicated DevTools for Node_**
@@ -79,15 +83,15 @@ Using '--auth-no-challenge' reduces an extra round-trip to challenge wget.
 - Select a file with the extension **_.cpuprofile_** which contains JSON
 - Click on the file in the left nav bar under CPU PROFILES
 
-## Interpreting Profile
+### Interpreting Profile
 - **Self time:** How long it took to complete the current invocation of the function, including only the statements in the function itself, not including any functions that it called.
 - **Total time:** The time it took to complete the current invocation of this function and any functions that it called.
 - **Aggregated self time:** Aggregate time for all invocations of the function across the recording, not including functions called by this function.
 - **Aggregated total time:** Aggregate total time for all invocations of the function, including functions called by this function.
 
-# Configuration
+## Configuration
 
-## Init with existing express
+### Init with existing express
 
 ```
 import { init, shutdown } from 'profiler-heapdump'
@@ -105,7 +109,7 @@ const router = init({
 // const server = app.listen ...
 ```
 
-## Init create new express
+### Init create new express
 
 ```
 import { init, shutdown } from 'profiler-heapdump'
@@ -119,7 +123,7 @@ init({
 // on sigterm it gracefully shutsdown the server
 ```
 
-## Options
+### Options
 
 Below are the defaults.
 Be sure to set the authentication.
@@ -128,6 +132,7 @@ Be sure to set the authentication.
 const defaultOptions = {
   server: {
     expressApp: undefined,
+    routePrefix: '/debug'
     bind: {
       host: '127.0.0.1',
       port: 6660,
@@ -149,7 +154,7 @@ const defaultOptions = {
 }
 ```
 
-# Heap Dump
+## Heap Dump
 
 Get heap dump via a curl or wget command which downloads the results to the local filesystem.
 
@@ -157,20 +162,20 @@ Get heap dump via a curl or wget command which downloads the results to the loca
 # default test config is basic auth, this will fail with 401
 
 curl --compressed \
--G http://localhost:6660/heapdump \
+-G http://localhost:6660/debug/heapdump \
 -o testHeap.heapsnapshot \
 -H "Authorization: Bearer changeme"
 ```
 OR
 ```shell
 curl --compressed \
-'http://localhost:6660/heapdump' \
+'http://localhost:6660/debug/heapdump' \
 -o testHeap.heapsnapshot \
 -u "change:me"
 ```
 OR
 ```shell
 wget --http-user=change --http-password=me --auth-no-challenge \
-'http://localhost:6660/heapdump' \
+'http://localhost:6660/debug/heapdump' \
 -O testHeap.heapsnapshot
 ```

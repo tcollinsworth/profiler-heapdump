@@ -1,6 +1,7 @@
 import cloneDeep from 'lodash.clonedeep'
 import express from 'express'
 import wrap from 'express-async-wrap'
+import merge from 'lodash.merge'
 import { getAuthMiddleware } from './auth'
 import { getHeapDump, getProfile } from './inspector-api'
 
@@ -13,7 +14,7 @@ const state = {
 const defaultOptions = {
   server: {
     expressApp: undefined,
-    // routePrefix: undefined,
+    routePrefix: '/debug',
     bind: {
       host: '127.0.0.1',
       port: 6660,
@@ -36,7 +37,7 @@ const defaultOptions = {
 
 export function init(overrideOptions) {
   const options = cloneDeep(defaultOptions)
-  Object.assign(options, overrideOptions)
+  merge(options, overrideOptions)
   options.server.expressApp = overrideOptions?.server?.expressApp
 
   if (options.server.bind == null) options.server.bind = defaultOptions.server.bind
@@ -47,10 +48,14 @@ export function init(overrideOptions) {
   return initWithNewExpress(options)
 }
 
-function initWithExistingExpress() {
+function initWithExistingExpress(options) {
   const router = new express.Router()
-  router.use('/profile', wrap(getProfile))
-  router.use('/heapdump', wrap(getHeapDump))
+
+  const authMiddleware = getAuthMiddleware(options?.server?.authentication)
+  if (authMiddleware != null) router.use(options.server.routePrefix, authMiddleware)
+
+  router.use(`${options.server.routePrefix}/profile`, wrap(getProfile))
+  router.use(`${options.server.routePrefix}/heapdump`, wrap(getHeapDump))
   return router
 }
 
@@ -60,8 +65,8 @@ function initWithNewExpress(options) {
   const authMiddleware = getAuthMiddleware(options?.server?.authentication)
   if (authMiddleware != null) app.use(authMiddleware)
 
-  app.use('/profile', wrap(getProfile))
-  app.use('/heapdump', wrap(getHeapDump))
+  app.use(`${options.server.routePrefix}/profile`, wrap(getProfile))
+  app.use(`${options.server.routePrefix}/heapdump`, wrap(getHeapDump))
 
   state.server = app.listen(options.server.bind.port, options.server.bind.host, () => {
     process.stdout.write(`New Heap/Profiler server listening on ${options.server.bind.host}:${options.server.bind.port}\n`)

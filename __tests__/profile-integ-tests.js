@@ -179,21 +179,21 @@ async function profileAndValidate(t, auth = null, host = HOST) {
   let resultPromise
   if (auth == null) {
     // start profiler
-    resultPromise = axios.get(`http://${host}:${PORT}/profile?durationSec=2&sampleRateUs=1`)
+    resultPromise = axios.get(`http://${host}:${PORT}/debug/profile?durationSec=2&sampleRateUs=1`)
   } else if (auth?.basic != null) {
     const config = {
       headers: {
         Authorization: `Basic ${Buffer.from(`${auth.basic.username}:${auth.basic.password}`).toString('base64')}`,
       },
     }
-    resultPromise = axios.get(`http://${host}:${PORT}/profile?durationSec=2&sampleRateUs=1`, config)
+    resultPromise = axios.get(`http://${host}:${PORT}/debug/profile?durationSec=2&sampleRateUs=1`, config)
   } else if (auth?.bearerToken != null) {
     const config = {
       headers: {
         Authorization: `Bearer ${auth.bearerToken}`,
       },
     }
-    resultPromise = axios.get(`http://${host}:${PORT}/profile?durationSec=2&sampleRateUs=1`, config)
+    resultPromise = axios.get(`http://${host}:${PORT}/debug/profile?durationSec=2&sampleRateUs=1`, config)
   } else {
     throw new Error('invalid request')
   }

@@ -13,10 +13,10 @@ const app = express()
 app.use(compression())
 
 // using only GET so it works via browser URL and one less argument via curl
-// app.get('/heapdump', wrap(getHeapdump))
+// app.get('/debug/heapdump', wrap(getHeapdump))
 
 // ?durationSec=10&samplingRateMs=1000&
-app.get('/profile', wrap(getProfile))
+app.get('/debug/profile', wrap(getProfile))
 
 export function start() {
   app.listen(PORT, HOST, () => {
