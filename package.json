@@ -1,6 +1,6 @@
 {
   "name": "profiler-heapdump",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "",
   "main": "api.js",
   "scripts": {
@@ -29,6 +29,7 @@
   "dependencies": {
     "bfj": "^7.0.2",
     "compression": "^1.7.4",
+    "delay": "^5.0.0",
     "express": "^4.18.1",
     "express-async-wrap": "^1.0.0",
     "lodash.clonedeep": "^4.5.0",
@@ -37,7 +38,6 @@
   "devDependencies": {
     "ava": "^3.15.0",
     "axios": "^0.27.2",
-    "delay": "^5.0.0",
     "eslint": "^8.23.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
