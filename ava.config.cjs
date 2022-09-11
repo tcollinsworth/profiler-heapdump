@@ -7,6 +7,6 @@ module.exports = {
   failWithoutAssertions: false,
   require: [
     'ignore-styles',
-    'esm-wallaby',
+    'esm',
   ],
 }

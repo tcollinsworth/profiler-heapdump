@@ -2,6 +2,8 @@ import cloneDeep from 'lodash.clonedeep'
 import express from 'express'
 import wrap from 'express-async-wrap'
 import merge from 'lodash.merge'
+import safe from 'safeunsafe'
+
 import { getAuthMiddleware } from './auth'
 import { getHeapDump, getProfile } from './inspector-api'
 
@@ -39,7 +41,7 @@ export function init(overrideOptions) {
   const options = cloneDeep(defaultOptions)
   merge(options, overrideOptions)
 
-  if (options?.server?.isExistingExpressApp === true) {
+  if (safe(options).server.isExistingExpressApp.unsafe === true) {
     return initWithExistingExpress(options)
   }
   return initWithNewExpress(options)
@@ -48,7 +50,7 @@ export function init(overrideOptions) {
 function initWithExistingExpress(options) {
   const router = new express.Router()
 
-  const authMiddleware = getAuthMiddleware(options?.server?.authentication)
+  const authMiddleware = getAuthMiddleware(safe(options).server.authentication.unsafe)
   if (authMiddleware != null) router.use(authMiddleware)
 
   router.use('/profile', wrap(getProfile))
@@ -59,11 +61,11 @@ function initWithExistingExpress(options) {
 function initWithNewExpress(options) {
   const app = express()
 
-  const authMiddleware = getAuthMiddleware(options?.server?.authentication)
+  const authMiddleware = getAuthMiddleware(safe(options).server.authentication.unsafe)
   if (authMiddleware != null) app.use(authMiddleware)
 
   let routePrefix = ''
-  if (options?.server?.newExpresRoutePrefix != null) {
+  if (safe(options).server.newExpresRoutePrefix.unsafe != null) {
     routePrefix = options.server.newExpresRoutePrefix
   }
 

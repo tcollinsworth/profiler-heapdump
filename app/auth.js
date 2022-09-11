@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash.clonedeep'
 import merge from 'lodash.merge'
+import safe from 'safeunsafe'
 
 const defaultState = {
   authentication: {
@@ -33,17 +34,17 @@ export function getAuthMiddleware(authOptions) {
     merge(state.authentication, cloneDeep(authOptions))
   }
 
-  if (state?.authentication?.basic?.username != null && state?.authentication?.basic?.password != null) {
-    state.authentication.authorizationToken = Buffer.from(`${state?.authentication?.basic?.username}:${state?.authentication?.basic?.password}`).toString('base64')
+  if (safe(state).authentication.basic.username.unsafe != null && safe(state).authentication.basic.password.unsafe != null) {
+    state.authentication.authorizationToken = Buffer.from(`${safe(state).authentication.basic.username.unsafe}:${safe(state).authentication.basic.password.unsafe}`).toString('base64')
     process.stdout.write('Heap/Profiler server basic auth enabled, ')
   }
 
-  if (state?.authentication?.bearerToken != null) {
-    state.authentication.authorizationToken = state?.authentication?.bearerToken
+  if (safe(state).authentication.bearerToken.unsafe != null) {
+    state.authentication.authorizationToken = safe(state).authentication.bearerToken.unsafe
     process.stdout.write('Heap/Profiler server bearer auth enabled, ')
   }
 
-  if (state?.authentication?.authorizationToken == null) {
+  if (safe(state).authentication.authorizationToken.unsafe == null) {
     process.stdout.write('WARNING: Heap/Profiler server auth disabled, ')
     return null
   }
@@ -53,7 +54,7 @@ export function getAuthMiddleware(authOptions) {
 
 function authenticate(req, resp, next) {
   // no auth required, all next middleware
-  if (state?.authentication?.authorizationToken == null) {
+  if (safe(state).authentication.authorizationToken.unsafe == null) {
     return next()
   }
 
@@ -63,7 +64,7 @@ function authenticate(req, resp, next) {
   }
 
   // no authorization header provided and auth is required, bump rate limiting, return 401
-  if (req.headers.authorization == null && state?.authentication?.authorizationToken != null) {
+  if (req.headers.authorization == null && safe(state).authentication.authorizationToken.unsafe != null) {
     return resp.set('WWW-Authenticate', 'Basic').status(401).send('Unauthorized')
   }
 

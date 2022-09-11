@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-global-assign
-require = require('esm-wallaby')(module /* , options */)
+require = require('esm')(module /* , options */)
 
 const {
   start,

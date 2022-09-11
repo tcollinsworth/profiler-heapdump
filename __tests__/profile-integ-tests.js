@@ -2,6 +2,7 @@ import test from 'ava'
 import express from 'express'
 import axios from 'axios'
 import delay from 'delay'
+import safe from 'safeunsafe'
 import { init, shutdown } from '../api'
 
 const HOST = process.env.PROFILING_HEAPDUMP_HOST || '127.6.6.6'
@@ -186,14 +187,14 @@ async function profileAndValidate(t, auth = null, host = HOST) {
   if (auth == null) {
     // start profiler
     resultPromise = axios.get(`http://${host}:${PORT}/debug/profile?durationSec=2&sampleRateUs=1`)
-  } else if (auth?.basic != null) {
+  } else if (safe(auth).basic.unsafe != null) {
     const config = {
       headers: {
         Authorization: `Basic ${Buffer.from(`${auth.basic.username}:${auth.basic.password}`).toString('base64')}`,
       },
     }
     resultPromise = axios.get(`http://${host}:${PORT}/debug/profile?durationSec=2&sampleRateUs=1`, config)
-  } else if (auth?.bearerToken != null) {
+  } else if (safe(auth).bearerToken.unsafe != null) {
     const config = {
       headers: {
         Authorization: `Bearer ${auth.bearerToken}`,
