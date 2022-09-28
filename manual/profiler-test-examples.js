@@ -6,6 +6,10 @@ setTimeout(manyAsyncExecutions, 500 + 3000)
 setTimeout(otherInterleavedAsyncFunctions, 500 + 3000)
 setTimeout(longSyncExecution, 1500 + 5000)
 
+// TODO add class constructor
+// TODO add class function
+// TODO add nested named function
+
 function longSyncExecution() {
   process.stdout.write('' + timedLoop(500) + '\n')
 }

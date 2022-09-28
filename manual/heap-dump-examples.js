@@ -1,32 +1,35 @@
+import microtime from "microtime";
+import delay from "delay";
 
-let largeString = ''
-
-let largeArray = []
-
-let largeObject = {}
-
-let largeMap = new Map()
-
-let largeClassObject
-
-let largeCompositeObject
+let largeObject = {
+  largeString: '',
+  largeArray: [],
+  largeMap: new Map(),
+}
 
 class largeClass {
-  constructor(s, a, o, m) {
-    this.largeString = s
-    this.largeArray = a
-    this.largeObject = o
-    this.largeMap = m
+  constructor(obj) {
+    this.largeObject = obj
   }
 }
 
-export function init() {
-  for(let i=0; i<100000; i++) {
-    largeString = largeString + i
-    largeArray.push(i)
-    largeObject['' + i] = i
-    largeMap.set('' + i, i)
+let largeClassObject = new largeClass(largeObject)
+
+// ramp memory
+let maxSize = 100000
+export async function init() {
+  let tsUs = microtime.now()
+  for (let i = 0; i < maxSize; i++) {
+    if (i % 10 != 0) {
+      largeObject.largeString += i
+      largeObject.largeArray.push(i)
+      largeObject.largeMap.set('' + i, i)
+      continue
+    }
+    if (i % 10000 == 0) console.log(i)
+    tsUs = tsUs + 3000
+    let waitTil = tsUs - microtime.now()
+    if (waitTil > 0) await delay(waitTil)
   }
-  largeCompositeObject = { largeString, largeArray, largeObject, largeMap }
-  largeClassObject = new largeClass(largeString, largeArray, largeObject, largeMap)
+  console.log(maxSize)
 }
